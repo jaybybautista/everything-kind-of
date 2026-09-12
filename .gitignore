@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build outputs
+dist/
+**/dist/
+dist-ssr/
+
+# Firebase
+.firebase/
+serviceAccountKey.json
+**/serviceAccountKey.json
+
+# Environment files (do not commit secret keys)
+.env
+.env.*
+!.env.example
+!**/env.example
+
+# Logs
+*.log
+logs/
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

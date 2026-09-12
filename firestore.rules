@@ -1,0 +1,84 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function author() {
+      return signedIn() && request.auth.token.email == 'fluttershyyzh@gmail.com'
+        && request.auth.token.admin == true && request.auth.token.author == true;
+    }
+    function publicStory(id) {
+      return get(/databases/$(database)/documents/stories/$(id)).data.visibility == 'public';
+    }
+    function publicChapter(id) {
+      let chapter = get(/databases/$(database)/documents/chapters/$(id)).data;
+      return chapter.status == 'published' && publicStory(chapter.storyId);
+    }
+    function counterChange(storyId, collectionName, field) {
+      let interactionId = request.auth.uid + '_' + storyId;
+      let path = /databases/$(database)/documents/$(collectionName)/$(interactionId);
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly([field])
+        && ((!exists(path) && existsAfter(path)
+              && request.resource.data[field] == resource.data[field] + 1)
+          || (exists(path) && !existsAfter(path)
+              && request.resource.data[field] == resource.data[field] - 1));
+    }
+    match /users/{uid} {
+      allow read: if true;
+      allow create: if signedIn() && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['displayName', 'email', 'role', 'bio', 'followersCount', 'followingCount', 'createdAt'])
+        && request.resource.data.role == 'reader'
+        && request.resource.data.email == request.auth.token.email;
+      allow update: if signedIn() && request.auth.uid == uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['displayName', 'bio']);
+      match /readingProgress/{storyId} {
+        allow read, write: if signedIn() && request.auth.uid == uid;
+      }
+    }
+    match /stories/{id} {
+      allow read: if author() || resource.data.visibility == 'public';
+      allow create, update: if author() && request.resource.data.authorId == request.auth.uid;
+      allow delete: if author();
+      allow update: if signedIn() && resource.data.visibility == 'public'
+        && (counterChange(id, 'likes', 'likesCount') || counterChange(id, 'bookmarks', 'bookmarksCount'));
+    }
+    match /chapters/{id} {
+      allow read: if author() || (resource.data.status == 'published' && publicStory(resource.data.storyId));
+      allow create, update: if author();
+      allow delete: if author();
+    }
+    match /comments/{id} {
+      allow read: if author() || publicChapter(resource.data.chapterId);
+      // All mutations use the discussion API for ownership and moderation checks.
+      allow write: if false;
+    }
+    match /{kind}/{id} {
+      allow read: if (kind == 'likes' || kind == 'bookmarks') && signedIn()
+        && id.matches(request.auth.uid + '_.*');
+      allow create: if (kind == 'likes' || kind == 'bookmarks') && signedIn()
+        && request.resource.data.userId == request.auth.uid
+        && id == request.auth.uid + '_' + request.resource.data.storyId
+        && request.resource.data.keys().hasOnly(['userId', 'storyId', 'createdAt'])
+        && publicStory(request.resource.data.storyId);
+      allow delete: if (kind == 'likes' || kind == 'bookmarks') && signedIn()
+        && resource.data.userId == request.auth.uid;
+    }
+    match /follows/{id} {
+      allow read: if signedIn();
+      allow create: if signedIn() && request.resource.data.followerId == request.auth.uid
+        && id == request.auth.uid + '_' + request.resource.data.authorId
+        && request.resource.data.keys().hasOnly(['followerId', 'authorId', 'createdAt']);
+      allow delete: if signedIn() && resource.data.followerId == request.auth.uid;
+    }
+    match /notifications/{id} {
+      // Users can read and mark-as-read their own notifications.
+      allow read: if signedIn() && resource.data.userId == request.auth.uid;
+      // Any signed-in user may create a notification (needed for client-side like/follow events).
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly(['userId', 'type', 'actorName', 'storyTitle', 'storyId', 'chapterId', 'read', 'createdAt'])
+        && request.resource.data.read == false;
+      // Only the recipient may update (to mark as read).
+      allow update: if signedIn() && resource.data.userId == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['read']);
+    }
+  }
+}

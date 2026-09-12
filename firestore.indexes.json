@@ -1,0 +1,175 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "notifications",
+      "fields": [
+        { "order": "ASCENDING",  "fieldPath": "userId" },
+        { "order": "DESCENDING", "fieldPath": "createdAt" }
+      ],
+      "queryScope": "COLLECTION"
+    },
+    {
+      "collectionGroup": "chapters",
+      "fields": [
+        {
+          "order": "ASCENDING",
+          "fieldPath": "storyId"
+        },
+        {
+          "order": "ASCENDING",
+          "fieldPath": "orderIndex"
+        }
+      ],
+      "queryScope": "COLLECTION"
+    },
+    {
+      "collectionGroup": "chapters",
+      "fields": [
+        {
+          "order": "ASCENDING",
+          "fieldPath": "storyId"
+        },
+        {
+          "order": "ASCENDING",
+          "fieldPath": "status"
+        },
+        {
+          "order": "ASCENDING",
+          "fieldPath": "orderIndex"
+        }
+      ],
+      "queryScope": "COLLECTION"
+    },
+    {
+      "collectionGroup": "stories",
+      "fields": [
+        {
+          "order": "ASCENDING",
+          "fieldPath": "authorId"
+        },
+        {
+          "order": "DESCENDING",
+          "fieldPath": "updatedAt"
+        }
+      ],
+      "queryScope": "COLLECTION"
+    },
+    {
+      "collectionGroup": "stories",
+      "fields": [
+        {
+          "order": "ASCENDING",
+          "fieldPath": "visibility"
+        },
+        {
+          "order": "DESCENDING",
+          "fieldPath": "updatedAt"
+        }
+      ],
+      "queryScope": "COLLECTION"
+    },
+    {
+      "collectionGroup": "comments",
+      "fields": [
+        {
+          "order": "ASCENDING",
+          "fieldPath": "chapterId"
+        },
+        {
+          "order": "ASCENDING",
+          "fieldPath": "createdAt"
+        }
+      ],
+      "queryScope": "COLLECTION"
+    },
+    {
+      "collectionGroup": "stories",
+      "fields": [
+        {
+          "order": "ASCENDING",
+          "fieldPath": "visibility"
+        },
+        {
+          "order": "ASCENDING",
+          "fieldPath": "status"
+        },
+        {
+          "order": "DESCENDING",
+          "fieldPath": "createdAt"
+        }
+      ],
+      "queryScope": "COLLECTION"
+    },
+    {
+      "collectionGroup": "stories",
+      "fields": [
+        {
+          "order": "ASCENDING",
+          "fieldPath": "visibility"
+        },
+        {
+          "order": "ASCENDING",
+          "fieldPath": "status"
+        },
+        {
+          "order": "ASCENDING",
+          "fieldPath": "genre"
+        },
+        {
+          "order": "DESCENDING",
+          "fieldPath": "createdAt"
+        }
+      ],
+      "queryScope": "COLLECTION"
+    },
+    {
+      "collectionGroup": "stories",
+      "fields": [
+        {
+          "order": "ASCENDING",
+          "fieldPath": "visibility"
+        },
+        {
+          "order": "ASCENDING",
+          "fieldPath": "status"
+        },
+        {
+          "order": "ASCENDING",
+          "fieldPath": "language"
+        },
+        {
+          "order": "DESCENDING",
+          "fieldPath": "createdAt"
+        }
+      ],
+      "queryScope": "COLLECTION"
+    },
+    {
+      "collectionGroup": "stories",
+      "fields": [
+        {
+          "order": "ASCENDING",
+          "fieldPath": "visibility"
+        },
+        {
+          "order": "ASCENDING",
+          "fieldPath": "status"
+        },
+        {
+          "order": "ASCENDING",
+          "fieldPath": "genre"
+        },
+        {
+          "order": "ASCENDING",
+          "fieldPath": "language"
+        },
+        {
+          "order": "DESCENDING",
+          "fieldPath": "createdAt"
+        }
+      ],
+      "queryScope": "COLLECTION"
+    }
+  ],
+  "fieldOverrides": []
+}

@@ -1,0 +1,16 @@
+{
+  "name": "everything-kind-of-server",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch --watch-path=index.js --watch-path=routes --watch-path=services --watch-path=middleware --watch-path=firebaseAdmin.js --watch-path=.env index.js",
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "axios": "^1.7.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "firebase-admin": "^12.6.0"
+  }
+}

@@ -1,0 +1,325 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------
+   Everything, kind of: design tokens
+   Muted pink accent on a warm neutral page, Poppins throughout.
+   Story text areas get extra line-height for long-form reading.
+--------------------------------------------------------- */
+@theme {
+  --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif;
+
+  --color-page: #FAF7F6;        /* warm off-white background */
+  --color-surface: #FFFFFF;     /* cards, panels */
+  --color-ink: #2B2426;         /* primary text, near-black with warmth */
+  --color-ink-soft: #6B5F60;    /* secondary text */
+  --color-line: #EBE1E1;        /* hairline dividers, not shadows */
+
+  --color-rose-50:  #FBEEF0;
+  --color-rose-100: #F4D9DE;
+  --color-rose-300: #E3AAB4;
+  --color-rose-500: #C97D8C;    /* primary accent */
+  --color-rose-600: #B15F70;    /* accent hover / active */
+  --color-rose-700: #8F4A58;    /* text-on-light accent use */
+}
+
+body {
+  background-color: var(--color-page);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+/* Long-form chapter reading: comfortable measure and line-height */
+.prose-story {
+  max-width: 68ch;
+  line-height: 1.8;
+  font-size: 1.05rem;
+}
+
+.prose-story p {
+  margin-bottom: 1.25em;
+}
+
+/* Rich text editor output shares the same reading rhythm */
+.editor-content .ProseMirror {
+  min-height: 50vh;
+  outline: none;
+  line-height: 1.8;
+}
+
+/* Shared form input styling used across story/chapter forms */
+.input {
+  width: 100%;
+  border-radius: 0.5rem;
+  border: 1px solid var(--color-line);
+  padding: 0.5rem 0.75rem;
+  outline: none;
+  background-color: var(--color-surface);
+}
+.input:focus {
+  border-color: var(--color-rose-500);
+}
+
+/* ── Story Detail Page ─────────────────────────────── */
+.story-detail {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 4rem;
+}
+.story-detail-genre {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-rose-600);
+}
+.story-detail-title {
+  margin-top: 0.375rem;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--color-ink);
+}
+.story-detail-author {
+  display: inline-block;
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--color-ink-soft);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.story-detail-author:hover { color: var(--color-rose-600); }
+
+.story-detail-description {
+  margin-top: 1.5rem;
+  line-height: 1.8;
+  color: var(--color-ink);
+}
+
+/* Action buttons: like, bookmark, follow */
+.story-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.75rem;
+  flex-wrap: wrap;
+}
+.story-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.1rem;
+  border-radius: 9999px;
+  border: 1.5px solid var(--color-line);
+  background: var(--color-surface);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-ink-soft);
+  cursor: pointer;
+  transition: border-color 0.18s, background 0.18s, color 0.18s, transform 0.12s;
+  user-select: none;
+}
+.story-action-btn:hover {
+  border-color: var(--color-rose-300);
+  background: var(--color-rose-50);
+  color: var(--color-rose-700);
+  transform: translateY(-1px);
+}
+.story-action-btn:active { transform: scale(0.96); }
+.story-action-btn.active {
+  border-color: var(--color-rose-500);
+  background: var(--color-rose-50);
+  color: var(--color-rose-700);
+}
+.story-action-btn.active svg { fill: var(--color-rose-500); stroke: var(--color-rose-500); }
+.story-action-btn .btn-count {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Chapter list */
+.story-toc-heading {
+  margin-top: 2.5rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--color-ink);
+  border-bottom: 1.5px solid var(--color-line);
+  padding-bottom: 0.5rem;
+}
+.story-toc-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.story-toc-item {
+  border-bottom: 1px solid var(--color-line);
+}
+.story-toc-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.875rem 0.25rem;
+  text-decoration: none;
+  color: var(--color-ink);
+  font-size: 0.9rem;
+  transition: color 0.15s, padding-left 0.15s;
+}
+.story-toc-link:hover {
+  color: var(--color-rose-600);
+  padding-left: 0.5rem;
+}
+.story-toc-meta {
+  font-size: 0.75rem;
+  color: var(--color-ink-soft);
+  white-space: nowrap;
+  margin-left: 1rem;
+}
+
+/* ── Notification Bell Panel ──────────────────────── */
+.notif-wrapper {
+  position: relative;
+}
+.notif-bell-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  color: var(--color-ink-soft);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.notif-bell-btn:hover {
+  background: var(--color-rose-50);
+  color: var(--color-rose-700);
+}
+.notif-badge {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 3px;
+  border-radius: 9999px;
+  background: #e05070;
+  color: #fff;
+  font-size: 0.6rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  border: 1.5px solid var(--color-surface);
+  animation: notif-pop 0.25s ease;
+}
+@keyframes notif-pop {
+  0% { transform: scale(0.5); opacity: 0; }
+  70% { transform: scale(1.2); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.notif-panel {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 340px;
+  max-height: 460px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: 12px;
+  box-shadow: 0 8px 40px rgba(43, 36, 38, 0.12), 0 2px 8px rgba(43, 36, 38, 0.06);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 100;
+  animation: notif-slide-in 0.18s ease;
+}
+@keyframes notif-slide-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.notif-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.875rem 1rem 0.75rem;
+  border-bottom: 1px solid var(--color-line);
+}
+.notif-panel-header h3 {
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+.notif-mark-all {
+  font-size: 0.7rem;
+  color: var(--color-rose-600);
+  cursor: pointer;
+  font-weight: 500;
+  transition: opacity 0.15s;
+}
+.notif-mark-all:hover { opacity: 0.7; }
+.notif-list {
+  overflow-y: auto;
+  flex: 1;
+}
+.notif-item {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--color-line);
+  cursor: default;
+  transition: background 0.12s;
+  position: relative;
+}
+.notif-item:last-child { border-bottom: none; }
+.notif-item:hover { background: var(--color-rose-50); }
+.notif-item.unread { background: #fdf3f5; }
+.notif-item.unread::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--color-rose-500);
+  border-radius: 0 2px 2px 0;
+}
+.notif-icon {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--color-rose-100);
+  color: var(--color-rose-700);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+}
+.notif-body {
+  flex: 1;
+  min-width: 0;
+}
+.notif-text {
+  font-size: 0.78rem;
+  color: var(--color-ink);
+  line-height: 1.45;
+}
+.notif-text strong { font-weight: 600; }
+.notif-time {
+  font-size: 0.68rem;
+  color: var(--color-ink-soft);
+  margin-top: 0.2rem;
+}
+.notif-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 2.5rem 1rem;
+  color: var(--color-ink-soft);
+  font-size: 0.8rem;
+  text-align: center;
+}
+.notif-empty svg { opacity: 0.3; }
+
